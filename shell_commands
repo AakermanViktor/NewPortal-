@@ -1,0 +1,89 @@
+from django.contrib.auth.models import User
+
+user1 = User.objects.create_user('alex')
+user2 = User.objects.create_user('maria')
+
+from NewPortal.models import Author
+
+author1 = Author.objects.create(user=user1)
+author2 = Author.objects.create(user=user2)
+
+from NewPortal.models import Category
+
+cat1 = Category.objects.create(name_category='Спорт')
+cat2 = Category.objects.create(name_category='Политика')
+cat3 = Category.objects.create(name_category='Технологии')
+cat4 = Category.objects.create(name_category='Образование')
+
+from NewPortal.models import Post
+
+
+post1 = Post.objects.create(
+    author=author1,
+    post_type='article',
+    title='Как программировать на Python',
+    content='Python — мощный язык программирования. Он подходит для начинающих.'
+)
+
+
+post2 = Post.objects.create(
+    author=author2,
+    post_type='article',
+    title='Современные технологии 2026',
+    content='Искусственный интеллект и машинное обучение меняют мир.'
+)
+
+
+post3 = Post.objects.create(
+    author=author1,
+    post_type='news',
+    title='Открытие новой планеты',
+    content='Ученые обнаружили планету, похожую на Землю.'
+)
+
+from NewPortal.models import PostCategory
+
+PostCategory.objects.create(post=post1, category=cat1)
+PostCategory.objects.create(post=post1, category=cat2)
+PostCategory.objects.create(post=post2, category=cat3)
+PostCategory.objects.create(post=post3, category=cat4)
+
+from NewPortal.models import Comment
+
+Comment.objects.create(post=post1, user=user1, text='Отличная статья!')
+Comment.objects.create(post=post1, user=user2, text='Спасибо, очень полезно.')
+Comment.objects.create(post=post2, user=user1, text='Интересная тема!')
+Comment.objects.create(post=post3, user=user2, text='Удивительное открытие!')
+
+post1.like()
+post1.like()
+post1.dislike()
+post2.like()
+post3.like()
+post3.like()
+
+comments = Comment.objects.all()
+comments[0].like()
+comments[0].like()
+comments[1].like()
+comments[2].dislike()
+comments[3].like()
+
+author1.update_rating()
+author2.update_rating()
+
+>>>best_user = Author.objects.order_by('-rating_author').first()
+>>> print(best_user.user.username, best_user.rating_author)
+alex 14
+
+>>> best_post = Post.objects.order_by('-rating_news_or_article').first()
+>>> print(best_post.date_posted, best_post.author.user.username, best_post.rating_news_or_article, best_post.title, best_post.preview())
+2026-04-06 12:16:11.535686+00:00 alex 2 Открытие новой планеты Ученые обнаружили планету, похожую на Землю.
+
+>>> comments_for_best = Comment.objects.filter(post=best_post)
+>>> for comment in comments_for_best:
+...     print(comment.date_comment, comment.user.username, comment.rating_comment, comment.text)
+...
+2026-04-06 12:19:35.992722+00:00 maria 1 Удивительное открытие!
+
+exit()
