@@ -1,0 +1,29 @@
+{% extends 'flatpages/default.html' %}
+{%load censor_filters%}
+
+{% block title %}
+{{ post.title|censor }}
+{% endblock %}
+
+{% block content %}
+<article>
+    <h1>{{ post.title|censor}}</h1>
+
+    <p><strong>Дата публикации:</strong> {{ post.date_posted|date:"d.m.Y" }}</p>
+
+    <hr>
+
+    <div style="font-size: 1.1em; line-height: 1.6;">
+        <h3>Полный текст статьи:</h3>
+        <p>{{ post.content|censor|linebreaks }}</p>
+    </div>
+
+    <hr>
+
+    <a href="/news/">
+        <button style="padding: 10px 15px; cursor: pointer; background-color: #007bff; color: white; border: none; border-radius: 5px;">
+            ← Назад ко всем новостям
+        </button>
+    </a>
+</article>
+{% endblock %}
